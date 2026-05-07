@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MONSTER ZERO</title>
+
+<link rel="manifest" href="manifest.json">
+
+<meta name="theme-color" content="#00ffe5">
+
+<style>
+
+body{
+    margin:0;
+    font-family:sans-serif;
+    background:linear-gradient(to bottom,#0f172a,#111827);
+    color:white;
+    overflow:hidden;
+}
+
+#game{
+    width:100vw;
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+}
+
+h1{
+    font-size:50px;
+    color:#00ffe5;
+    text-shadow:0 0 20px #00ffe5;
+}
+
+#battle{
+    width:90%;
+    max-width:500px;
+    background:#1e293b;
+    border:3px solid #00ffe5;
+    border-radius:20px;
+    padding:20px;
+}
+
+.enemy{
+    width:180px;
+    height:180px;
+    background:red;
+    border-radius:50%;
+    margin:20px auto;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:80px;
+}
+
+.hp-bar{
+    width:100%;
+    height:30px;
+    background:#111;
+    border-radius:999px;
+    overflow:hidden;
+}
+
+.hp{
+    width:100%;
+    height:100%;
+    background:linear-gradient(to right,#00ff88,#00ffe5);
+    transition:0.3s;
+}
+
+button{
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:15px;
+    margin-top:10px;
+    font-size:20px;
+    font-weight:bold;
+}
+
+.attack{
+    background:#00ffe5;
+}
+
+.gacha{
+    background:#ffd700;
+}
+
+#log{
+    margin-top:10px;
+    color:#ffd700;
+    font-weight:bold;
+    text-align:center;
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="game">
+
+<h1>MONSTER ZERO</h1>
+
+<div id="battle">
+
+<h2>🔥 ダークスライム</h2>
+
+<div class="hp-bar">
+<div class="hp" id="hp"></div>
+</div>
+
+<div class="enemy">
+👾
+</div>
+
+<button class="attack" onclick="attack()">
+⚔ 攻撃！
+</button>
+
+<div id="log"></div>
+
+<div style="margin-top:10px;font-size:22px;">
+💰 コイン:
+<span id="coins">0</span>
+</div>
+
+<button class="gacha" onclick="gacha()">
+🎰 ガチャ
+</button>
+
+</div>
+
+</div>
+
+<script>
+
+let hp = 100;
+let coins = 0;
+
+function attack(){
+
+    let damage =
+        Math.floor(Math.random()*15)+5;
+
+    hp -= damage;
+
+    if(hp < 0){
+        hp = 0;
+    }
+
+    document.getElementById("hp").style.width =
+        hp + "%";
+
+    document.getElementById("log").innerHTML =
+        "💥 "+damage+" ダメージ！";
+
+    if(hp <= 0){
+
+        coins += 10;
+
+        document.getElementById("coins").innerHTML =
+            coins;
+
+        document.getElementById("log").innerHTML =
+            "🏆 勝利！";
+
+        setTimeout(()=>{
+
+            hp = 100;
+
+            document.getElementById("hp").style.width =
+                "100%";
+
+        },1000);
+    }
+}
+
+function gacha(){
+
+    if(coins < 10){
+
+        document.getElementById("log").innerHTML =
+            "❌ コイン不足";
+
+        return;
+    }
+
+    coins -= 10;
+
+    document.getElementById("coins").innerHTML =
+        coins;
+
+    const monsters = [
+        "🐶 ポチモン",
+        "🐱 ニャル",
+        "🐸 ケロッグ",
+        "🔥 インフェルノZERO"
+    ];
+
+    let getMonster =
+        monsters[
+            Math.floor(Math.random()*monsters.length)
+        ];
+
+    document.getElementById("log").innerHTML =
+        "🎉 "+getMonster+" GET!";
+}
+
+/* PWA */
+
+if("serviceWorker" in navigator){
+
+    navigator.serviceWorker.register(
+        "service-worker.js"
+    );
+}
+
+</script>
+
+</body>
+</html>
